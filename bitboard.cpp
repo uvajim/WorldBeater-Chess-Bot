@@ -199,7 +199,6 @@ void printBoard(ChessBoard chess_board){
     }
 }
 
-
 uint64_t pop_LSB(uint64_t num){
     uint64_t LSB = 0x1;
     while (!(num & 1)){
@@ -209,16 +208,174 @@ uint64_t pop_LSB(uint64_t num){
     return LSB;
 }
 
-void generate_rook_moves(const int &side, const ChessBoard &board){
-    uint64_t rook_one;
-    uint64_t rook_two;
-    uint64_t possible_moves;
-    //if white
+uint64_t get_bishops_attacks(const ChessBoard &board, const int &side, const uint64_t &position){
+    return 0xfffffffffff;
+}
+
+uint64_t get_rook_attacks(const ChessBoard &board, const int &side, const uint64_t &position){
+    return 0xfffffffff;
+}
+
+uint64_t get_pawn_attacks(const ChessBoard &board, const int &side){
+    uint64_t possible_moves = 0x0;
+    uint64_t pawn_positions;
+
     if (side){
-        rook_one = pop_LSB(board.WhiteRooks);
-        rook_two = rook_one ^ board.WhiteRooks;
+        \
+        pawn_positions = board.WhitePawns;
+
+        //checks to see if this is the first move that the 
+        //pawn can move, if os we allow the pawn to move forward two
+        //squares
+        possible_moves |= (pawn_positions & Rank[1]) << 16;
+
+        //adds the move forward one square move
+        possible_moves |= pawn_positions << 8;
+
+        //checks to see that there are no collisions
+        possible_moves &= board.EmptyBoard;
         
+        //checks to see if we can attack a piece as a pawn
+        possible_moves |= pawn_positions << 7 & board.BlackPieces;
+        possible_moves |= pawn_positions << 9 & board.BlackPieces;
+
+        return possible_moves;
     }
+
+    pawn_positions = board.BlackPawns;
+
+        //checks to see if this is the first move that the 
+        //pawn can move, if os we allow the pawn to move forward two
+        //squares
+        possible_moves |= (pawn_positions & Rank[6]) >> 16;
+
+        //adds the move forward one square move
+        possible_moves |= pawn_positions >> 8;
+        //checks to see if there are any collisions for moving fowards
+        possible_moves &= board.EmptyBoard;
+        
+        //checks to see if we can attack on that side 
+        possible_moves |= pawn_positions >> 7 & board.WhitePieces;
+        possible_moves |= pawn_positions >> 9 & board.WhitePieces;
+
+        return possible_moves;
+
+    }
+
+uint64_t get_queen_attacks(const ChessBoard &board, const int &side, const uint64_t &position){
+    uint64_t queen_attack = get_bishops_attacks(board, side, position) |
+                            get_rook_attacks(board, side, position);
+    return queen_attack;
+}
+
+/**
+ * @brief Get the knights attacks object
+ * this will return all valid moves of a knight
+ * 
+ * @param board : the current state of the board
+ * @param side : the : 1 for white, 0 for black
+ * @param position : the position of the piece in question
+ * @return uint64_t 
+ */
+uint64_t get_knights_attacks(const ChessBoard &board, const int &side, const uint64_t &position){
+
+
+    uint64_t possible_moves = 0x0;
+    if (position << 17 & ~File[0])
+        possible_moves |= position << 17;
+    if (position << 15 & ~File[6])
+        possible_moves |= position << 15;
+    if (position << 6 & ~(File[6] | File[5]))
+        possible_moves |= position << 6;
+    if(position << 10 & ~(File[0] | File[1]))
+        possible_moves |= position << 10;
+
+    if(position >> 17 & ~File[6])
+        possible_moves |= position >> 17;
+    if (position << 15 & ~File[0])
+        possible_moves |= position >> 15;
+    if (position << 6 & ~(File[0] | File[1]))
+        possible_moves |= position >> 6;
+    if(position << 10 & ~(File[5] | File[6]))
+        possible_moves |= position >> 10;
     
+    return side ? possible_moves & board.WhitePieces ^ possible_moves:
+                  possible_moves & board.BlackPieces ^ possible_moves;
+}
+/**
+ * @brief Get the king attacks object
+ * TODO: Need to add checkmate checking
+ * 
+ * @param board 
+ * @param side 
+ * @return uint64_t 
+ */
+uint64_t get_king_attacks(const ChessBoard &board, const int &side){
+    uint64_t king_moves = 0x0;
+    if (side){
+        uint64_t position = board.WhiteKing;
+        if (position << 1 & ~File[0])
+            king_moves |= position << 1;
+        if (position >> 1 & ~File[6])
+            king_moves |= position >> 1;
+
+
+        if (position << 7 & ~File[6])
+            king_moves |= position << 7;
+            if (position >> 7 & ~File[0])
+            king_moves |= position >> 7;
+
+        //move forward and move backwards
+        if (position << 8)
+            king_moves |= position << 8;
+        if (position >> 8)
+            king_moves |= position >> 8;
+
+        if (position << 9 & ~File[0])
+            king_moves |= position << 9;
+        if (position << 9 & ~File[6])
+            king_moves |= position >> 9;
+        return king_moves;
+    }
+    uint64_t position = board.BlackKing;
+        if (position << 1 & ~File[0])
+            king_moves |= position << 1;
+        if (position >> 1 & ~File[6])
+            king_moves |= position >> 1;
+
+
+        if (position << 7 & ~File[6])
+            king_moves |= position << 7;
+            if (position >> 7 & ~File[0])
+            king_moves |= position >> 7;
+
+        //move forward and move backwards
+        if (position << 8)
+            king_moves |= position << 8;
+        if (position >> 8)
+            king_moves |= position >> 8;
+
+        if (position << 9 & ~File[0])
+            king_moves |= position << 9;
+        if (position << 9 & ~File[6])
+            king_moves |= position >> 9;
+        return king_moves;
+}
+
+
+
+
+int main(){
+    struct ChessBoard board;
+
+    printBoard(board);
+    uint64_t LSB = pop_LSB(board.WhiteKnights);
+    uint64_t knight_attacks = get_knights_attacks(board, 1, LSB);
+    uint64_t other_knight_attacks = get_knights_attacks(board, 1, LSB ^ board.WhiteKnights);
+    uint64_t pawn_moves = get_pawn_attacks(board, 1);
+    printf("%llx \n", knight_attacks);
+    printf("%llx \n", other_knight_attacks);
+    printf("%llx \n", pawn_moves);
+    return 0;
 
 }
