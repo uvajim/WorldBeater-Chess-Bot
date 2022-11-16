@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <iostream>
+#include <cstring>
 
 
 struct ChessBoard{
@@ -46,7 +47,7 @@ struct ChessBoard{
  * @brief: an array of unsigned integers to bitmask the files
  * 
  */
-uint64_t File[] = {
+const uint64_t File[] = {
     0x0101010101010101,
     0x0202020202020202,
     0x0404040404040404,
@@ -65,7 +66,7 @@ uint64_t File[] = {
  * Rank[3] = 3
  * .... etc
  */
-uint64_t Rank[] = {
+const uint64_t Rank[] = {
 
 
     0x00000000000000ff,
@@ -77,6 +78,8 @@ uint64_t Rank[] = {
     0x00ff000000000000,
     0xff00000000000000
 };
+
+
 
 const uint64_t rookMagics[64] = {
     0xa8002c000108020ULL, 0x6c00049b0002001ULL, 0x100200010090040ULL, 0x2480041000800801ULL, 0x280028004000800ULL,
@@ -110,6 +113,8 @@ const uint64_t bishopMagics[64] = {
     0x1000042304105ULL, 0x10008830412a00ULL, 0x2520081090008908ULL, 0x40102000a0a60140ULL,
 };
 
+
+
 const int rookIndexBits[64] = {
     12, 11, 11, 11, 11, 11, 11, 12,
     11, 10, 10, 10, 10, 10, 10, 11,
@@ -132,11 +137,22 @@ const int bishopIndexBits[64] = {
     6, 5, 5, 5, 5, 5, 5, 6
 };
 
+
+//Bishop Attack Table
+uint64_t BishopTable[64][512];
+//Rook Attack Table
+uint64_t RookTable[64][4096];
+
 void printBoard(ChessBoard chess_board);
 
 uint64_t pop_LSB(uint64_t num);
 
 void generate_rook_moves(const int &side);
+
+void  generate_bishops_masks();
+
+//NOTE: init this array by calling generate_bishops_masks()
+uint64_t bishops_masks[64];
 
 uint64_t get_bishops_attacks(const ChessBoard &board, 
                              const int &side, 

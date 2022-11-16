@@ -208,20 +208,32 @@ uint64_t pop_LSB(uint64_t num){
     return LSB;
 }
 
-uint64_t get_bishops_attacks(const ChessBoard &board, const int &side, const uint64_t &position){
-    return 0xfffffffffff;
+uint64_t get_bishops_attacks(const ChessBoard &board, const uint_fast8_t &side, const uint64_t &position){
+    uint64_t possible_moves = bishops_masks[position];
+    uint64_t blockers = possible_moves & board.AllPieces;
+    uint64_t key = (blockers * bishopMagics[position]) >> (64 - bishopIndexBits[position]);
+    return BishopTable[position][key];
+
 }
 
-uint64_t get_rook_attacks(const ChessBoard &board, const int &side, const uint64_t &position){
-    return 0xfffffffff;
+uint64_t get_rook_attacks(const ChessBoard &board, const uint64_t &position){
+    uint64_t rank = Rank[position >> 3];
+    uint64_t file = File[position % 8];
+    uint64_t possible_moves = (rank | file) & ~position;
+    possible_moves = possible_moves & ~(Rank[0] | Rank[7] | File[0] | File[7]);
+    uint64_t blockers = possible_moves & board.AllPieces;
+    uint64_t key = (blockers * rookMagics[position]) >> (64 - rookIndexBits[position]);
+    return RookTable[position][key];
+
+    
 }
 
-uint64_t get_pawn_attacks(const ChessBoard &board, const int &side){
+uint64_t get_pawn_attacks(const ChessBoard &board, const uint_fast8_t &side){
     uint64_t possible_moves = 0x0;
-    uint64_t pawn_positions;
+    uint64_t pawn_positions = 0x0;
 
     if (side){
-        \
+        
         pawn_positions = board.WhitePawns;
 
         //checks to see if this is the first move that the 
@@ -262,7 +274,7 @@ uint64_t get_pawn_attacks(const ChessBoard &board, const int &side){
 
     }
 
-uint64_t get_queen_attacks(const ChessBoard &board, const int &side, const uint64_t &position){
+uint64_t get_queen_attacks(const ChessBoard &board, const uint_fast8_t &side, const uint64_t &position){
     uint64_t queen_attack = get_bishops_attacks(board, side, position) |
                             get_rook_attacks(board, side, position);
     return queen_attack;
@@ -277,7 +289,7 @@ uint64_t get_queen_attacks(const ChessBoard &board, const int &side, const uint6
  * @param position : the position of the piece in question
  * @return uint64_t 
  */
-uint64_t get_knights_attacks(const ChessBoard &board, const int &side, const uint64_t &position){
+uint64_t get_knights_attacks(const ChessBoard &board, const uint_fast8_t &side, const uint64_t &position){
 
 
     uint64_t possible_moves = 0x0;
@@ -310,7 +322,7 @@ uint64_t get_knights_attacks(const ChessBoard &board, const int &side, const uin
  * @param side 
  * @return uint64_t 
  */
-uint64_t get_king_attacks(const ChessBoard &board, const int &side){
+uint64_t get_king_attacks(const ChessBoard &board, const uint_fast8_t &side){
     uint64_t king_moves = 0x0;
     if (side){
         uint64_t position = board.WhiteKing;
