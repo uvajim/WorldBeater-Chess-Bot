@@ -6,185 +6,115 @@ void printBoard(ChessBoard chess_board){
     char board[64];
     memset(board,'-', 64);
     //these will be used to classify the pawns
-    int rank = 0;
-    int file = 0;
+    int pos = 0x0;
     while (chess_board.WhitePawns){
         if (chess_board.WhitePawns & 1)
-            board[8*file + rank] = 'P';
-        ++rank;
+            board[pos] = 'P';
         chess_board.WhitePawns = chess_board.WhitePawns >> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
     }
-    rank = 0;
-    file = 0;
+    pos = 0x0;
     while (chess_board.BlackPawns){
         if (chess_board.BlackPawns & 1)
-            board[8*file + rank] = 'P';
-        ++rank;
+            board[pos] = 'P';
         chess_board.BlackPawns = chess_board.BlackPawns >> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
     }
 
 
     //printing the rooks
-    rank = 0;
-    file = 0;
+    pos = 0x0;
     while (chess_board.WhiteRooks){
         if (chess_board.WhiteRooks & 1)
-            board[8*file + rank] = 'R';
-        ++rank;
+            board[pos] = 'R';
         chess_board.WhiteRooks = chess_board.WhiteRooks >> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
     }
-    rank = 0;
-    file = 0;
+    pos = 0x0;
     while (chess_board.BlackRooks){
-        
         if (chess_board.BlackRooks & 1)
-            board[8*file + rank] = 'R';
-        ++rank;
+            board[pos] = 'R';
         chess_board.BlackRooks = chess_board.BlackRooks >> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
     }
     //printing the knights
-    rank = 0;
-    file = 0;
+    pos = 0x0;
     while (chess_board.WhiteKnights){
         if (chess_board.WhiteKnights & 1)
-            board[8*file + rank] = 'N';
-        ++rank;
+            board[pos] = 'N';
         chess_board.WhiteKnights = chess_board.WhiteKnights >> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
     }
-    rank = 0;
-    file = 0;
+    pos = 0x0;
     while (chess_board.BlackKnights){
         if (chess_board.BlackKnights & 1)
-            board[8*file + rank] = 'N';
-        ++rank;
+            board[pos] = 'N';
         chess_board.BlackKnights = chess_board.BlackKnights >> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
     }
     //printing the bishops
-    rank = 0;
-    file = 0;
+    pos = 0x0;
     while (chess_board.WhiteBishops){
         if (chess_board.WhiteBishops & 1)
-            board[8*file + rank] = 'B';
-        ++rank;
+            board[pos] = 'B';
         chess_board.WhiteBishops = chess_board.WhiteBishops >> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
     }
-    rank = 0;
-    file = 0;
+    pos = 0x0;
     while (chess_board.BlackBishops){
         if (chess_board.BlackBishops & 1)
-            board[8*file + rank] = 'B';
-        ++rank;
+            board[pos] = 'B';
         chess_board.BlackBishops = chess_board.BlackBishops >> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
     }
 
     //printing the bishops
-    rank = 0;
-    file = 0;
+    pos = 0x0; 
     while (chess_board.WhiteBishops){
         if (chess_board.WhiteBishops & 1)
-            board[8*file + rank] = 'B';
-        ++rank;
+            board[pos] = 'B';
         chess_board.WhiteBishops = chess_board.WhiteBishops >> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
+        
     }
-    rank = 0;
-    file = 0;
+    pos = 0x0;
     while (chess_board.BlackBishops){
         if (chess_board.BlackBishops & 1)
-            board[8*file + rank] = 'B';
-        ++rank;
+            board[pos] = 'B';
         chess_board.BlackBishops = chess_board.BlackBishops >> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
     }
 
     //printing the queens
-    rank = 0;
-    file = 0;
+    pos = 0x0;
     while (chess_board.WhiteQueen){
         if (chess_board.WhiteQueen & 1)
-            board[8*file + rank] = 'Q';
-        ++rank;
+            board[pos] = 'Q';
         chess_board.WhiteQueen = chess_board.WhiteQueen >> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
     }
-    rank = 0;
-    file = 0;
+    pos = 0x0;
     while (chess_board.BlackQueen){
         if (chess_board.BlackQueen & 1)
-            board[8*file + rank] = 'Q';
-        ++rank;
+            board[pos] = 'Q';
         chess_board.BlackQueen = chess_board.BlackQueen>> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
     }
 
     //printing the kings
-    rank = 0;
-    file = 0;
+    pos = 0x0;
     while (chess_board.WhiteKing){
         if (chess_board.WhiteKing & 1)
-            board[8*file + rank] = 'K';
-        ++rank;
+            board[pos] = 'K';
         chess_board.WhiteKing = chess_board.WhiteKing >> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
     }
-    rank = 0;
-    file = 0;
+    pos = 0x0;
     while (chess_board.BlackKing){
         if (chess_board.BlackKing& 1)
-            board[8*file + rank] = 'K';
-        ++rank;
+            board[pos] = 'K';
         chess_board.BlackKing = chess_board.BlackKing>> 1;
-        if (rank == 8){
-            rank = 0;
-            ++file;
-        }
+        ++pos;
     }
 
     int i = 0;
@@ -208,7 +138,7 @@ uint64_t pop_LSB(uint64_t num){
     return LSB;
 }
 
-uint64_t get_bishops_attacks(const ChessBoard &board, const uint_fast8_t &side, const uint64_t &position){
+uint64_t get_bishops_attacks(const ChessBoard &board, const uint64_t &position){
     uint64_t possible_moves = bishops_masks[position];
     uint64_t blockers = possible_moves & board.AllPieces;
     uint64_t key = (blockers * bishopMagics[position]) >> (64 - bishopIndexBits[position]);
@@ -274,9 +204,9 @@ uint64_t get_pawn_attacks(const ChessBoard &board, const uint_fast8_t &side){
 
     }
 
-uint64_t get_queen_attacks(const ChessBoard &board, const uint_fast8_t &side, const uint64_t &position){
-    uint64_t queen_attack = get_bishops_attacks(board, side, position) |
-                            get_rook_attacks(board, side, position);
+uint64_t get_queen_attacks(const ChessBoard &board, const uint64_t &position){
+    uint64_t queen_attack = get_bishops_attacks(board, position) |
+                            get_rook_attacks(board, position);
     return queen_attack;
 }
 
@@ -289,8 +219,7 @@ uint64_t get_queen_attacks(const ChessBoard &board, const uint_fast8_t &side, co
  * @param position : the position of the piece in question
  * @return uint64_t 
  */
-uint64_t get_knights_attacks(const ChessBoard &board, const uint_fast8_t &side, const uint64_t &position){
-
+uint64_t get_knights_attacks(const ChessBoard &board, const uint64_t &position){
 
     uint64_t possible_moves = 0x0;
     if (position << 17 & ~File[0])
@@ -311,8 +240,7 @@ uint64_t get_knights_attacks(const ChessBoard &board, const uint_fast8_t &side, 
     if(position << 10 & ~(File[5] | File[6]))
         possible_moves |= position >> 10;
     
-    return side ? possible_moves & board.WhitePieces ^ possible_moves:
-                  possible_moves & board.BlackPieces ^ possible_moves;
+    return possible_moves;
 }
 /**
  * @brief Get the king attacks object
@@ -322,72 +250,46 @@ uint64_t get_knights_attacks(const ChessBoard &board, const uint_fast8_t &side, 
  * @param side 
  * @return uint64_t 
  */
-uint64_t get_king_attacks(const ChessBoard &board, const uint_fast8_t &side){
+uint64_t get_king_attacks(const ChessBoard &board, const uint64_t &position){
     uint64_t king_moves = 0x0;
-    if (side){
-        uint64_t position = board.WhiteKing;
-        if (position << 1 & ~File[0])
-            king_moves |= position << 1;
-        if (position >> 1 & ~File[6])
-            king_moves |= position >> 1;
 
-
-        if (position << 7 & ~File[6])
-            king_moves |= position << 7;
-            if (position >> 7 & ~File[0])
-            king_moves |= position >> 7;
+    if (position << 1 & ~File[0])
+        king_moves |= position << 1;
+    if (position >> 1 & ~File[6])
+        king_moves |= position >> 1;
+    if (position << 7 & ~File[6])
+        king_moves |= position << 7;
+    if (position >> 7 & ~File[0])
+        king_moves |= position >> 7;
 
         //move forward and move backwards
-        if (position << 8)
-            king_moves |= position << 8;
-        if (position >> 8)
-            king_moves |= position >> 8;
-
-        if (position << 9 & ~File[0])
-            king_moves |= position << 9;
-        if (position << 9 & ~File[6])
-            king_moves |= position >> 9;
-        return king_moves;
-    }
-    uint64_t position = board.BlackKing;
-        if (position << 1 & ~File[0])
-            king_moves |= position << 1;
-        if (position >> 1 & ~File[6])
-            king_moves |= position >> 1;
-
-
-        if (position << 7 & ~File[6])
-            king_moves |= position << 7;
-            if (position >> 7 & ~File[0])
-            king_moves |= position >> 7;
-
-        //move forward and move backwards
-        if (position << 8)
-            king_moves |= position << 8;
-        if (position >> 8)
-            king_moves |= position >> 8;
-
-        if (position << 9 & ~File[0])
-            king_moves |= position << 9;
-        if (position << 9 & ~File[6])
-            king_moves |= position >> 9;
-        return king_moves;
+    if (position << 8)
+        king_moves |= position << 8;
+    if (position >> 8)
+        king_moves |= position >> 8;
+    if (position << 9 & ~File[0])
+        king_moves |= position << 9;
+    if (position << 9 & ~File[6])
+        king_moves |= position >> 9;
+    return king_moves;
 }
 
+void generate_bishops_masks(){
+    uint64_t curr_pos = 0x0;
+    while (curr_pos < 64){
+    //get ne
+    //get nw
+    //get sw
+    //get se
 
-
+    }
+}
 
 int main(){
     struct ChessBoard board;
 
     printBoard(board);
-    uint64_t LSB = pop_LSB(board.WhiteKnights);
-    uint64_t knight_attacks = get_knights_attacks(board, 1, LSB);
-    uint64_t other_knight_attacks = get_knights_attacks(board, 1, LSB ^ board.WhiteKnights);
-    uint64_t pawn_moves = get_pawn_attacks(board, 1);
-    printf("%llx \n", knight_attacks);
-    printf("%llx \n", other_knight_attacks);
-    printf("%llx \n", pawn_moves);
+    
     return 0;
 
 }

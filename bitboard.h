@@ -1,5 +1,7 @@
 #ifndef BITBOARD_H
 #define BITBOARD_H
+#define border 0xff1818181818181818181818181818ff;
+
 
 #include <stdint.h>
 #include <iostream>
@@ -151,22 +153,24 @@ void generate_rook_moves(const int &side);
 
 void  generate_bishops_masks();
 
+void generate_ne_rays(uint64_t pos);
+void generate_nw_rays(uint64_t pos);
+void generate_se_rays(uint64_t pos);
+void generate_sw_rays(uint64_t pos);
+
 //NOTE: init this array by calling generate_bishops_masks()
 uint64_t bishops_masks[64];
 
 uint64_t get_bishops_attacks(const ChessBoard &board, 
-                             const int &side, 
                              const uint64_t &position);
 
 uint64_t get_rook_attacks(const ChessBoard &board, 
-                          const int &side,
                           const uint64_t &position);
 
-uint64_t get_queen_attacks(const ChessBoard &board, const int &side,
+uint64_t get_queen_attacks(const ChessBoard &board,
                            const uint64_t &position);
 
 uint64_t get_knight_attacks(const ChessBoard &board, 
-                          const int &side,
                           const uint64_t &position);
 
 uint64_t get_king_attacks(const ChessBoard &board, 
