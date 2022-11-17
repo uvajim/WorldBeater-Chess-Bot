@@ -139,6 +139,11 @@ const int bishopIndexBits[64] = {
     6, 5, 5, 5, 5, 5, 5, 6
 };
 
+uint64_t ne_rays[64];
+uint64_t nw_rays[64];
+uint64_t sw_rays[64];
+uint64_t se_rays[64];
+
 
 //Bishop Attack Table
 uint64_t BishopTable[64][512];

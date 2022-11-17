@@ -2,7 +2,6 @@
 
 void printBoard(ChessBoard chess_board){
 
-    
     char board[64];
     memset(board,'-', 64);
     //these will be used to classify the pawns
@@ -220,7 +219,6 @@ uint64_t get_queen_attacks(const ChessBoard &board, const uint64_t &position){
  * @return uint64_t 
  */
 uint64_t get_knights_attacks(const ChessBoard &board, const uint64_t &position){
-
     uint64_t possible_moves = 0x0;
     if (position << 17 & ~File[0])
         possible_moves |= position << 17;
