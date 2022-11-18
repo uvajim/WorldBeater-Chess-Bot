@@ -1,6 +1,6 @@
 #ifndef BITBOARD_H
 #define BITBOARD_H
-#define border 0xff1818181818181818181818181818ff;
+#define border 0xff181818181818ff;
 
 
 #include <stdint.h>
@@ -158,10 +158,10 @@ void generate_rook_moves(const int &side);
 
 void  generate_bishops_masks();
 
-void generate_ne_rays(uint64_t pos);
-void generate_nw_rays(uint64_t pos);
-void generate_se_rays(uint64_t pos);
-void generate_sw_rays(uint64_t pos);
+void generate_ne_rays(const uint64_t &pos);
+void generate_nw_rays(const uint64_t &pos);
+void generate_se_rays(const uint64_t &pos);
+void generate_sw_rays(const uint64_t &pos);
 
 //NOTE: init this array by calling generate_bishops_masks()
 uint64_t bishops_masks[64];

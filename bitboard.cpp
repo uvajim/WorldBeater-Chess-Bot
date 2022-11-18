@@ -157,20 +157,19 @@ uint64_t get_rook_attacks(const ChessBoard &board, const uint64_t &position){
     
 }
 
-uint64_t get_pawn_attacks(const ChessBoard &board, const uint_fast8_t &side){
+uint64_t get_pawn_attacks(const ChessBoard &board, const uint_fast8_t &side, const uint64_t &pos){
     uint64_t possible_moves = 0x0;
     uint64_t pawn_positions = 0x0;
 
     if (side){
         
-        pawn_positions = board.WhitePawns;
-
         //checks to see if this is the first move that the 
         //pawn can move, if os we allow the pawn to move forward two
         //squares
-        possible_moves |= (pawn_positions & Rank[1]) << 16;
-
-        //adds the move forward one square move
+        if (pos & Rank[1]){
+            
+            possible_moves |= pawn_positions << 16;
+        }
         possible_moves |= pawn_positions << 8;
 
         //checks to see that there are no collisions
@@ -182,25 +181,24 @@ uint64_t get_pawn_attacks(const ChessBoard &board, const uint_fast8_t &side){
 
         return possible_moves;
     }
-
-    pawn_positions = board.BlackPawns;
-
         //checks to see if this is the first move that the 
         //pawn can move, if os we allow the pawn to move forward two
         //squares
-        possible_moves |= (pawn_positions & Rank[6]) >> 16;
+        if (pos & Rank[6]){
+            
+            possible_moves |= pawn_positions << 16;
+        }
 
-        //adds the move forward one square move
-        possible_moves |= pawn_positions >> 8;
-        //checks to see if there are any collisions for moving fowards
+        possible_moves |= pawn_positions << 8;
+
+        //checks to see that there are no collisions
         possible_moves &= board.EmptyBoard;
         
-        //checks to see if we can attack on that side 
-        possible_moves |= pawn_positions >> 7 & board.WhitePieces;
-        possible_moves |= pawn_positions >> 9 & board.WhitePieces;
+        //checks to see if we can attack a piece as a pawn
+        possible_moves |= pawn_positions << 7 & board.BlackPieces;
+        possible_moves |= pawn_positions << 9 & board.BlackPieces;
 
         return possible_moves;
-
     }
 
 uint64_t get_queen_attacks(const ChessBoard &board, const uint64_t &position){
@@ -272,14 +270,62 @@ uint64_t get_king_attacks(const ChessBoard &board, const uint64_t &position){
     return king_moves;
 }
 
+void generate_ne_rays(const uint64_t &pos){
+    uint64_t ray = 0x0;
+    uint64_t curr_step = pos << 9;
+    while (curr_step & ~File[7] & ~Rank[7]){
+        ray |= curr_step;
+        curr_step << 9;
+    }
+    ne_rays[pos] = ray;
+}
+
+void generate_nw_rays(const uint64_t &pos){
+    uint64_t ray =0x0;
+    uint64_t curr_step = pos << 7;
+    while (curr_step & ~File[0] & ~Rank[7]){
+        ray |= curr_step;
+        curr_step << 7;
+    }
+    nw_rays[pos] = ray;
+}
+
+void generate_se_rays(const uint64_t &pos){
+    uint64_t ray = 0x0;
+    uint64_t curr_step = pos >> 9;
+    while (curr_step & ~File[7] & ~Rank[0]){
+        ray |= curr_step;
+        curr_step >> 9;
+    }
+    se_rays[pos] = ray;
+}
+
+void generate_sw_rays(const uint64_t &pos){
+    uint64_t ray =0x0;
+    uint64_t curr_step = pos >> 7;
+    while (curr_step & ~File[0] & ~Rank[0]){
+        ray |= curr_step;
+        curr_step >> 7;
+    }
+    sw_rays[pos] = ray;
+}
+
 void generate_bishops_masks(){
     uint64_t curr_pos = 0x0;
     while (curr_pos < 64){
     //get ne
+    generate_ne_rays(curr_pos);
     //get nw
+    generate_nw_rays(curr_pos);
     //get sw
+    generate_sw_rays(curr_pos);
     //get se
+    generate_sw_rays(curr_pos);
 
+    composite_rays[curr_pos] = ne_rays[curr_pos] |
+                               nw_rays[curr_pos] |
+                               sw_rays[curr_pos] |
+                               se_rays[curr_pos];
     }
 }
 
