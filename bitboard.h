@@ -143,6 +143,7 @@ uint64_t ne_rays[64];
 uint64_t nw_rays[64];
 uint64_t sw_rays[64];
 uint64_t se_rays[64];
+uint64_t composite_rays[64];
 
 
 //Bishop Attack Table
@@ -166,6 +167,9 @@ void generate_sw_rays(const uint64_t &pos);
 //NOTE: init this array by calling generate_bishops_masks()
 uint64_t bishops_masks[64];
 
+
+void generate_blockers();
+
 uint64_t get_bishops_attacks(const ChessBoard &board, 
                              const uint64_t &position);
 
@@ -175,8 +179,9 @@ uint64_t get_rook_attacks(const ChessBoard &board,
 uint64_t get_queen_attacks(const ChessBoard &board,
                            const uint64_t &position);
 
-uint64_t get_knight_attacks(const ChessBoard &board, 
-                          const uint64_t &position);
+uint64_t get_knights_attacks(const ChessBoard &board, 
+                            const uint64_t &position, 
+                            const uint_fast8_t &side);
 
 uint64_t get_king_attacks(const ChessBoard &board, 
                           const int &side);

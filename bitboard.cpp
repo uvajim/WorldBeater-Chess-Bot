@@ -137,6 +137,15 @@ uint64_t pop_LSB(uint64_t num){
     return LSB;
 }
 
+uint64_t pop_MSB(uint64_t num){
+    uint64_t MSB = 0x1;
+    while (num){
+        MSB = MSB << 1;
+        num = num >> 1;
+    }
+    return MSB;
+}
+
 uint64_t get_bishops_attacks(const ChessBoard &board, const uint64_t &position){
     uint64_t possible_moves = bishops_masks[position];
     uint64_t blockers = possible_moves & board.AllPieces;
@@ -216,7 +225,7 @@ uint64_t get_queen_attacks(const ChessBoard &board, const uint64_t &position){
  * @param position : the position of the piece in question
  * @return uint64_t 
  */
-uint64_t get_knights_attacks(const ChessBoard &board, const uint64_t &position){
+uint64_t get_knights_attacks(const ChessBoard &board, const uint64_t &position, const uint_fast8_t &side){
     uint64_t possible_moves = 0x0;
     if (position << 17 & ~File[0])
         possible_moves |= position << 17;
@@ -236,7 +245,8 @@ uint64_t get_knights_attacks(const ChessBoard &board, const uint64_t &position){
     if(position << 10 & ~(File[5] | File[6]))
         possible_moves |= position >> 10;
     
-    return possible_moves;
+    return side ? possible_moves & ~board.WhitePieces :
+                  possible_moves & ~board.BlackPieces;
 }
 /**
  * @brief Get the king attacks object
@@ -326,6 +336,62 @@ void generate_bishops_masks(){
                                nw_rays[curr_pos] |
                                sw_rays[curr_pos] |
                                se_rays[curr_pos];
+    }
+}
+
+void generate_blockers(){
+    //generates all possible attackers, the board can have at max 323 pieces. 
+    for (uint64_t i = 0; i < 0xffffffff00000000; ++i){
+        //for every single position we will check to see if we have 
+        for (uint64_t pos = 0; pos < 64; ++pos){
+            //generate the blocker
+            //get the key
+            //find the attack set,
+            //add the entry
+            //ROOK
+            uint64_t curr_square = 0x01 << pos;
+            uint64_t rook_attack = (Rank[pos >> 3] | File[pos % 8] & ~curr_square) & ~border ;
+            uint64_t rook_blocker = rook_attack & i;
+            uint64_t rook_key = rook_blocker * rookMagics[pos];
+            rook_key = rook_key >> (64 - rookIndexBits[pos]);
+            //if there exists a any blockers
+            if (rook_blocker){
+                //generate the attack mask
+            }
+            else{
+                RookTable[pos][rook_key] = rook_attack;
+            }
+
+            //BISHOP
+            uint64_t bishop_attack = composite_rays[pos];
+            uint64_t bishop_blockers = bishop_attack & i;
+            uint64_t bishop_key = bishop_blockers * bishopMagics[pos];
+            bishop_key = bishop_key >> (64 - bishopIndexBits[pos]);
+            if (bishop_key){
+                //generate the sliding attack
+                uint64_t adjusted_attack = 0x0;
+                //check the ne attack
+                uint64_t ne_attack = ne_rays[pos] & bishop_blockers;
+                uint64_t important_blocker = pop_LSB(ne_attack);
+                adjusted_attack |= (ne_rays[pos] & ~ne_rays[important_blocker]);
+                //find the nw attack
+                uint64_t nw_attack = nw_rays[pos] & bishop_blockers;
+                important_blocker = pop_LSB(nw_attack);
+                adjusted_attack |= (nw_rays[pos] & ~nw_rays[important_blocker]);
+                //find the sw attack
+                uint64_t sw_attack = sw_rays[pos] & bishop_blockers;
+                important_blocker = pop_MSB(sw_attack);
+                adjusted_attack |= (sw_rays[pos] & ~sw_rays[important_blocker]);
+                //find the se attack
+                uint64_t se_attack = se_rays[pos] & bishop_blockers;
+                important_blocker = pop_MSB(se_attack);
+                adjusted_attack = (se_rays[pos] & ~se_rays[important_blocker]);
+                BishopTable[pos][bishop_key] = adjusted_attack;
+            }
+            else{
+                BishopTable[pos][bishop_key] = bishop_attack;
+            }
+        }
     }
 }
 
